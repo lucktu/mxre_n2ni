@@ -217,16 +217,13 @@ static int readConfFile(const char * filename, char * const linebuffer) {
             return -1;
         }
         if ((strlen(linebuffer) + strlen(buffer) + 2)< MAX_CMDLINE_BUFFER_LENGTH) {
-            size_t current_len = strlen(linebuffer);
-            if (current_len + 1 < MAX_CMDLINE_BUFFER_LENGTH) {
-                linebuffer[current_len] = ' ';
-                linebuffer[current_len + 1] = '\0';
-            }
-            size_t current_len = strlen(linebuffer);
-            size_t buffer_len = strlen(buffer);
-            if (current_len + buffer_len + 1 < MAX_CMDLINE_BUFFER_LENGTH) {
-                memcpy(linebuffer + current_len, buffer, buffer_len + 1);
-            }
+            size_t line_len = strlen(linebuffer);
+            size_t buf_len = strlen(buffer);
+
+            linebuffer[line_len] = ' ';
+            linebuffer[line_len + 1] = '\0';
+
+            memcpy(linebuffer + line_len + 1, buffer, buf_len + 1);
         } else {
             traceEvent(TRACE_ERROR, "too many arguments");
             free(buffer);
@@ -883,6 +880,10 @@ void try_send_register( n2n_edge_t * eee,
         n2n_sock_str_t sockbuf;
 
         scan = (struct peer_info*) calloc( 1, sizeof( struct peer_info ) );
+        if (!scan) {
+            traceEvent( TRACE_ERROR, "Unable to allocate memory for peer_info");
+            return;
+        }
 
         memcpy(scan->mac_addr, mac, N2N_MAC_SIZE);
         scan->sock = *peer;
