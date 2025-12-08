@@ -129,6 +129,10 @@ int get_argv_from_registry(wchar_t* scm_name, char*** argv) {
                     *argv = (char **) realloc(*argv, maxargc * sizeof(char*));
                     if (*argv == NULL) {
                         traceEvent(TRACE_ERROR, "Unable to re-allocate memory");
+                        for (int i = 0; i < argc; i++) {
+                            free((*argv)[i]);
+                        }
+                        free(*argv);
                         return 0;
                     }
                 }
@@ -153,6 +157,10 @@ int get_argv_from_registry(wchar_t* scm_name, char*** argv) {
                 *argv = (char **) realloc(*argv, maxargc * sizeof(char*));
                 if (*argv == NULL) {
                     traceEvent(TRACE_ERROR, "Unable to re-allocate memory");
+                    for (int i = 0; i < argc; i++) {
+                        free((*argv)[i]);
+                    }
+                    free(*argv);
                     return 0;
                 }
             }

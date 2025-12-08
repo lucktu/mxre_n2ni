@@ -314,6 +314,9 @@ static char ** buildargv(int * effectiveargc, char * const linebuffer) {
                 char** new_argv = (char **)realloc(argv, maxargc * sizeof(char*));
                 if (new_argv == NULL) {
                     traceEvent(TRACE_ERROR, "Unable to re-allocate memory");
+                    for (int i = 0; i < argc; i++) {
+                        free(argv[i]);
+                    }
                     free(argv);
                     free(buffer);
                     return NULL;
